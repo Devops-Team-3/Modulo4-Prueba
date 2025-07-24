@@ -5,7 +5,8 @@ on:
     branches:
       - develop
       - main
-      - test/**    
+      - test/** 
+      - test/diego/**   
   pull_request:
 
 jobs:
