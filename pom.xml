@@ -27,6 +27,13 @@
     <version>4.20.0</version>
     </dependency>
 
+    <plugin>
+      <groupId>org.sonarsource.scanner.maven</groupId>
+      <artifactId>sonar-maven-plugin</artifactId>
+      <version>4.0.0.4121</version>
+    </plugin>
+
+
   </dependencies>
 
   <build>
@@ -36,6 +43,33 @@
       <artifactId>maven-surefire-plugin</artifactId>
       <version>3.2.5</version>
     </plugin>
+
+     <!-- JaCoCo para cobertura HTML -->
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.8.7</version>
+        <executions>
+          <execution>
+            <id>prepare-agent</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>report</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+            <configuration>
+              <formats>
+                <format>HTML</format>
+              </formats>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
   </plugins>
 </build>
 </project>

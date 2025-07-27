@@ -38,11 +38,13 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          mvn sonar:sonar \
-            -Dsonar.projectKey=Modulo4-Prueba \
-            -Dsonar.organization=Devops-Team-Adalit \
-            -Dsonar.host.url=https://sonarcloud.io \
-            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+        mvn sonar:sonar \
+          -Dsonar.projectKey=Modulo4-Prueba \
+          -Dsonar.organization=Devops-Team-Adalit \
+          -Dsonar.host.url=https://sonarcloud.io \
+          -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
+          -Dsonar.branch.name=${{ github.ref_name }} \
+          -Dsonar.branch.target=main
 
       - name: 🌐 Levantar página HTML para prueba UI
         run: |
@@ -66,14 +68,15 @@ jobs:
           name: selenium-firefox-report
           path: target/selenium-reports/firefox/
 
-      - name: ✅ Ejecutar pruebas unitarias (JUnit) y cobertura (JaCoCo)
+      - name: ✅ Ejecutar pruebas unitarias (JUnit) y generar cobertura HTML (JaCoCo)
         run: mvn clean verify
 
-      - name: 🔍 Subir cobertura JaCoCo como artifact
+      - name: 📊 Subir reporte de cobertura HTML (JaCoCo)
         uses: actions/upload-artifact@v4
         with:
-          name: cobertura-html
+          name: jacoco-html-report
           path: target/site/jacoco/
+
 
       - name: 📡 Publicar logs de pruebas unitarias
         if: always()
