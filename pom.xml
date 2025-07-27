@@ -12,31 +12,28 @@
   <url>http://maven.apache.org</url>
 
   <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
-    </dependency>
 
+    <!-- JUnit 5 API + Engine -->
     <dependency>
       <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-engine</artifactId>
+      <artifactId>junit-jupiter</artifactId>
       <version>5.10.0</version>
       <scope>test</scope>
     </dependency>
 
+    <!-- Selenium -->
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
-      <artifactId>selenium-devtools-v116</artifactId> 
+      <artifactId>selenium-java</artifactId>
       <version>4.20.0</version>
     </dependency>
-
 
   </dependencies>
 
   <build>
     <plugins>
+
+      <!-- Surefire para correr tests -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -70,11 +67,13 @@
         </executions>
       </plugin>
 
+      <!-- Sonar -->
       <plugin>
         <groupId>org.sonarsource.scanner.maven</groupId>
         <artifactId>sonar-maven-plugin</artifactId>
         <version>4.0.0.4121</version>
       </plugin>
+
     </plugins>
   </build>
 
