@@ -80,6 +80,10 @@ jobs:
           name: test-logs
           path: target/surefire-reports/
 
+      - name: 🌐 Levantar página HTML para prueba UI
+        run: |
+            nohup python3 -m http.server 8080 --directory ./web &
+          
       - name: 🔎 Ejecutar pruebas funcionales Selenium (Chrome)
         run: mvn -Dtest=UserFlowUITest#testWithChrome test
 
