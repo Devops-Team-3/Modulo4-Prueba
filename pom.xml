@@ -28,9 +28,10 @@
 
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
-      <artifactId>selenium-java</artifactId>
+      <artifactId>selenium-devtools-v138</artifactId>
       <version>4.20.0</version>
     </dependency>
+
   </dependencies>
 
   <build>
