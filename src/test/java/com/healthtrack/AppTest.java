@@ -1,38 +1,38 @@
 package com.healthtrack;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Unit test for simple App.
- */
-public class AppTest 
-    extends TestCase
-{
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
-    public AppTest( String testName )
-    {
-        super( testName );
+class UsuarioTest {
+
+    private Usuario usuario;
+
+    @BeforeEach
+    void setUp() {
+        usuario = new Usuario("Luis", 70.0);
     }
 
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite()
-    {
-        return new TestSuite( AppTest.class );
+    @Test
+    void testGetNombre() {
+        assertEquals("Luis", usuario.getNombre());
     }
 
-    /**
-     * Rigourous Test :-)
-     */
-    public void testApp()
-    {
-        assertTrue( true );
+    @Test
+    void testGetPesoInicial() {
+        assertEquals(70.0, usuario.getPeso());
+    }
+
+    @Test
+    void testActualizarPesoDeberiaAsignarNuevoValor() {
+        usuario.actualizarPeso(72.5);
+        // Esto fallará debido al bug intencional
+        assertEquals(72.5, usuario.getPeso(), "El peso no fue actualizado correctamente");
+    }
+
+    @Test
+    void testActualizarPesoConBugActual() {
+        usuario.actualizarPeso(72.5);
+        assertEquals(69.0, usuario.getPeso(), "El peso debería haber sido reducido en 1kg por el bug");
     }
 }
