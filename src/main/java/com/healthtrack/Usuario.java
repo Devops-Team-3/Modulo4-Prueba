@@ -17,10 +17,11 @@ public class Usuario {
         return peso;
     }
 
+    //Bug Corregido
     public void actualizarPeso(double nuevoPeso) {
-        // ERROR: En lugar de asignar el nuevo peso, se está restando 1kg.
-        this.peso -= 1;
+    this.peso = nuevoPeso;
     }
+
 
     public void mostrarInformacion() {
         System.out.println("Usuario: " + nombre + ", Peso Actual: " + peso + " kg");
