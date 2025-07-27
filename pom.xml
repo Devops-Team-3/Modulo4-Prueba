@@ -28,7 +28,7 @@
 
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
-      <artifactId>selenium-devtools</artifactId>
+      <artifactId>selenium-devtools-v116</artifactId> 
       <version>4.20.0</version>
     </dependency>
 
