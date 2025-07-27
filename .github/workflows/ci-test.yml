@@ -46,10 +46,10 @@ jobs:
             -Dsonar.branch.name=main \
             -Dsonar.branch.target=main
 
-
       - name: 🌐 Levantar página HTML para prueba UI
         run: |
           nohup python3 -m http.server 8080 --directory ./web &
+          sleep 5
 
       - name: 🔎 Ejecutar pruebas funcionales Selenium (Chrome)
         run: mvn -Dtest=UserFlowUITest#testWithChrome test
@@ -77,7 +77,6 @@ jobs:
         with:
           name: jacoco-html-report
           path: target/site/jacoco/
-
 
       - name: 📡 Publicar logs de pruebas unitarias
         if: always()
