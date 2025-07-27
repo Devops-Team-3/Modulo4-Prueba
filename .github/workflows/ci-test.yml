@@ -48,8 +48,9 @@ jobs:
 
       - name: 🌐 Levantar página HTML para prueba UI
         run: |
-          nohup python3 -m http.server 8080 --directory ./web &
-          sleep 5
+          nohup python3 -m http.server 8080 --directory ./web > server.log 2>&1 &
+          sleep 15
+          curl --retry 5 --retry-delay 2 --fail http://localhost:8080/index.html || cat server.log
 
       - name: 🔎 Ejecutar pruebas funcionales Selenium (Chrome)
         run: mvn -Dtest=UserFlowUITest#testWithChrome test
