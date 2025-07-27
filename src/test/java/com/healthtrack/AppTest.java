@@ -26,7 +26,6 @@ class UsuarioTest {
     @Test
     void testActualizarPesoDeberiaAsignarNuevoValor() {
         usuario.actualizarPeso(72.5);
-        // Esto fallará debido al bug intencional
         assertEquals(72.5, usuario.getPeso(), "El peso no fue actualizado correctamente");
     }
 
