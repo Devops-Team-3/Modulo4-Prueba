@@ -46,11 +46,12 @@ jobs:
             -Dsonar.branch.name=main \
             -Dsonar.branch.target=main
 
-      - name: 🌐 Levantar página HTML para prueba UI
+      - name: 🐳 Levantar servidor HTML con Docker (NGINX)
         run: |
-          nohup python3 -m http.server 8080 --directory ./web > server.log 2>&1 &
-          sleep 15
-          curl --retry 5 --retry-delay 2 --fail http://localhost:8080/index.html || cat server.log
+          docker run -d --name webserver -p 8080:80 \
+            -v $PWD/web:/usr/share/nginx/html:ro nginx:alpine
+          sleep 5
+          curl --retry 5 --retry-delay 2 --fail http://localhost:8080/index.html
 
       - name: 🔎 Ejecutar pruebas funcionales Selenium (Chrome)
         run: mvn -Dtest=UserFlowUITest#testWithChrome test
@@ -91,9 +92,8 @@ jobs:
           sudo apt-get update && sudo apt-get install -y jmeter
 
       - name: 🔢 Ejecutar prueba de rendimiento (JMeter)
-        run:
-          jmeter -n -t performance/performance_test.jmx -l
-          performance/results.jtl
+        run: |
+          jmeter -n -t performance/performance_test.jmx -l performance/results.jtl
 
       - name: 🚜 Generar reporte HTML de JMeter
         run: |
