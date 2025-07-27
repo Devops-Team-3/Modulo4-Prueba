@@ -34,9 +34,6 @@ jobs:
       - name: 🔧 Instalar dependencias
         run: mvn install -DskipTests
 
-      - name: ✅ Ejecutar pruebas unitarias (JUnit) y cobertura (JaCoCo)
-        run: mvn clean verify
-
       - name: ✨ SonarCloud Analysis
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -46,6 +43,44 @@ jobs:
             -Dsonar.organization=Devops-Team-Adalit \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+
+      - name: 🌐 Levantar página HTML para prueba UI
+        run: |
+          nohup python3 -m http.server 8080 --directory ./web &
+
+      - name: 🔎 Ejecutar pruebas funcionales Selenium (Chrome)
+        run: mvn -Dtest=UserFlowUITest#testWithChrome test
+
+      - name: 📃 Subir reporte Selenium Chrome
+        uses: actions/upload-artifact@v4
+        with:
+          name: selenium-chrome-report
+          path: target/selenium-reports/chrome/
+
+      - name: 🔎 Ejecutar pruebas funcionales Selenium (Firefox)
+        run: mvn -Dtest=UserFlowUITest#testWithFirefox test
+
+      - name: 📃 Subir reporte Selenium Firefox
+        uses: actions/upload-artifact@v4
+        with:
+          name: selenium-firefox-report
+          path: target/selenium-reports/firefox/
+
+      - name: ✅ Ejecutar pruebas unitarias (JUnit) y cobertura (JaCoCo)
+        run: mvn clean verify
+
+      - name: 🔍 Subir cobertura JaCoCo como artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cobertura-html
+          path: target/site/jacoco/
+
+      - name: 📡 Publicar logs de pruebas unitarias
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-logs
+          path: target/surefire-reports/
 
       - name: 🔹 Instalar JMeter
         run: |
@@ -66,38 +101,3 @@ jobs:
         with:
           name: jmeter-html-report
           path: performance/html-report/
-
-      - name: 🔍 Subir cobertura JaCoCo como artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: cobertura-html
-          path: target/site/jacoco/
-
-      - name: 📡 Publicar logs de pruebas unitarias
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-logs
-          path: target/surefire-reports/
-
-      - name: 🌐 Levantar página HTML para prueba UI
-        run: |
-            nohup python3 -m http.server 8080 --directory ./web &
-          
-      - name: 🔎 Ejecutar pruebas funcionales Selenium (Chrome)
-        run: mvn -Dtest=UserFlowUITest#testWithChrome test
-
-      - name: 📃 Subir reporte Selenium Chrome
-        uses: actions/upload-artifact@v4
-        with:
-          name: selenium-chrome-report
-          path: target/selenium-reports/chrome/
-
-      - name: 🔎 Ejecutar pruebas funcionales Selenium (Firefox)
-        run: mvn -Dtest=UserFlowUITest#testWithFirefox test
-
-      - name: 📃 Subir reporte Selenium Firefox
-        uses: actions/upload-artifact@v4
-        with:
-          name: selenium-firefox-report
-          path: target/selenium-reports/firefox/
