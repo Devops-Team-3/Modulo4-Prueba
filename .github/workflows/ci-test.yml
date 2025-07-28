@@ -59,20 +59,20 @@ jobs:
       - name: ⏳ Esperar a que el servidor NGINX esté disponible
         run: |
           echo "Esperando que el servidor NGINX esté listo..."
-          success=false
-          for i in {1..15}; do
-            if curl -sSf http://localhost:8080/index.html > /dev/null; then
-              echo "✅ Servidor disponible"
-              success=true
+          for i in {1..20}; do
+            status=$(curl -o /dev/null -s -w "%{http_code}" http://localhost:8080/index.html || echo 000)
+            if [ "$status" -eq 200 ]; then
+              echo "✅ Servidor disponible con código HTTP 200"
               break
             else
-              echo "⏳ Esperando ($i)..."
-              sleep 2
+              echo "⏳ Intento $i: aún no disponible (HTTP $status)"
+              sleep 3
             fi
           done
 
-          if [ "$success" = false ]; then
-            echo "❌ El servidor no respondió a tiempo"
+          final_status=$(curl -o /dev/null -s -w "%{http_code}" http://localhost:8080/index.html || echo 000)
+          if [ "$final_status" -ne 200 ]; then
+            echo "❌ El servidor no respondió con éxito tras múltiples intentos"
             docker logs webserver || true
             exit 1
           fi
