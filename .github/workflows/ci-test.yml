@@ -44,6 +44,7 @@ jobs:
         run: |
           mvn sonar:sonar \
             -Dsonar.projectKey=develop \
+            -Dsonar.organization=Devops-Team-3 \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.login=$SONAR_TOKEN \
             -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
