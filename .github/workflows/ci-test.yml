@@ -43,7 +43,7 @@ jobs:
       - name: 🛰️ Análisis SonarCloud (con cobertura)
         run: |
           mvn sonar:sonar \
-            -Dsonar.projectKey=Modulo4-Prueba \
+            -Dsonar.projectKey=develop \
             -Dsonar.organization=Devops-Team-Adalit \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.login=$SONAR_TOKEN \
