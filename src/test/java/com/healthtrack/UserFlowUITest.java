@@ -15,8 +15,9 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 
-private class UserFlowUITest {
+public class UserFlowUITest {
 
+    // ✅ Campo con modificador permitido
     private static final String URL = "http://localhost:8080/index.html";
 
     @Test
@@ -35,6 +36,7 @@ private class UserFlowUITest {
         runUITest(driver, "firefox");
     }
 
+    
     private void runUITest(WebDriver driver, String browser) throws IOException {
         try {
             driver.get(URL);
@@ -47,10 +49,7 @@ private class UserFlowUITest {
             boolean postCond = titulo.getText().equals("Peso actualizado");
 
             File dir = new File("target/selenium-reports/" + browser);
-            if (!dir.exists()) {
-                dir.mkdirs();
-            }
-
+            dir.mkdirs();
             try (FileWriter writer = new FileWriter(new File(dir, "report.html"))) {
                 writer.write("<html><body>");
                 writer.write("<h2>Resultado Selenium (" + browser + ")</h2>");
