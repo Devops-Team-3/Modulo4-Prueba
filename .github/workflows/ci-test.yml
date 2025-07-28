@@ -45,8 +45,19 @@ jobs:
           echo "127.0.0.1 host.docker.internal" | sudo tee -a /etc/hosts
           docker run -d --name webserver -p 8080:80 \
             -v $PWD/web:/usr/share/nginx/html:ro nginx:alpine
-          sleep 5
-          curl --retry 5 --retry-delay 2 --fail http://host.docker.internal:8080/index.html
+
+      - name: ⏳ Esperar a que el servidor NGINX esté disponible
+        run: |
+          echo "Esperando que el servidor NGINX esté listo..."
+          for i in {1..10}; do
+            if curl -sSf http://localhost:8080/index.html > /dev/null; then
+              echo "✅ Servidor disponible"
+              break
+            else
+              echo "⏳ Esperando ($i)..."
+              sleep 2
+            fi
+          done
 
       - name: 🔎 Ejecutar pruebas funcionales Selenium (Chrome)
         run: mvn -Dtest=UserFlowUITest#testWithChrome test
