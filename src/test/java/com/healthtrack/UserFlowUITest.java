@@ -17,12 +17,15 @@ public class UserFlowUITest {
 
     private final String testUrl = "http://localhost:8080/index.html";
 
-    public void runUITest(WebDriver driver) throws Exception {
-        waitForServer();
-        driver.get(testUrl);
-        String title = driver.getTitle();
-        System.out.println("✅ Título de la página: " + title);
-        driver.quit();
+    private void runUITest(WebDriver driver) throws Exception {
+        try {
+            waitForServer();
+            driver.get(testUrl);
+            String title = driver.getTitle();
+            System.out.println("✅ Título de la página: " + title);
+        } finally {
+            driver.quit(); // Aquí dentro, donde driver está definido y accesible
+        }
     }
 
     private void waitForServer() {
@@ -50,7 +53,8 @@ public class UserFlowUITest {
         options.addArguments("--headless=new");
         options.addArguments("--no-sandbox");
         options.addArguments("--disable-dev-shm-usage");
-        options.addArguments("--remote-allow-origins=*"); 
+        options.addArguments("--remote-allow-origins=*");
+        WebDriver driver = new ChromeDriver(options);
         runUITest(driver);
     }
 
