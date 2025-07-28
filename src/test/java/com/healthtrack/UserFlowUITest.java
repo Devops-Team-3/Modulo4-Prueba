@@ -5,13 +5,13 @@ import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.Duration;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class UserFlowUITest {
 
@@ -46,14 +46,20 @@ public class UserFlowUITest {
     @Test
     public void testWithChrome() throws Exception {
         WebDriverManager.chromedriver().setup();
-        WebDriver driver = new ChromeDriver();
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--headless=new");
+        options.addArguments("--no-sandbox");
+        options.addArguments("--disable-dev-shm-usage");
+        options.addArguments("--remote-allow-origins=*"); 
         runUITest(driver);
     }
 
     @Test
     public void testWithFirefox() throws Exception {
         WebDriverManager.firefoxdriver().setup();
-        WebDriver driver = new FirefoxDriver();
+        FirefoxOptions options = new FirefoxOptions();
+        options.addArguments("--headless");
+        WebDriver driver = new FirefoxDriver(options);
         runUITest(driver);
     }
 }
