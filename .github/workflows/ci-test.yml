@@ -59,15 +59,23 @@ jobs:
       - name: ⏳ Esperar a que el servidor NGINX esté disponible
         run: |
           echo "Esperando que el servidor NGINX esté listo..."
-          for i in {1..10}; do
+          success=false
+          for i in {1..15}; do
             if curl -sSf http://localhost:8080/index.html > /dev/null; then
               echo "✅ Servidor disponible"
+              success=true
               break
             else
               echo "⏳ Esperando ($i)..."
               sleep 2
             fi
           done
+
+          if [ "$success" = false ]; then
+            echo "❌ El servidor no respondió a tiempo"
+            docker logs webserver || true
+            exit 1
+          fi
 
       - name: 🔎 Ejecutar pruebas funcionales Selenium (Chrome)
         run: mvn -Dtest=UserFlowUITest#testWithChrome test
