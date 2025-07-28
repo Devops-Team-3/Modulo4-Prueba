@@ -1,0 +1,102 @@
+name: CI/CD HealthTrack
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+    paths-ignore:
+      - "**/README.md"
+
+jobs:
+  build-test-analyze:
+    name: Build, Test, Sonar & Artifacts
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ✨ Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: ☕ Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: 🔧 Instalar dependencias
+        run: mvn install -DskipTests
+
+      - name: ✨ SonarCloud Analysis
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          mvn verify sonar:sonar \
+            -Dsonar.projectKey=Modulo4-Prueba \
+            -Dsonar.organization=Devops-Team-Adalit \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
+            -Dsonar.branch.name=main \
+            -Dsonar.branch.target=main
+
+      - name: 🐳 Levantar servidor HTML con Docker (NGINX)
+        run: |
+          echo "127.0.0.1 host.docker.internal" | sudo tee -a /etc/hosts
+          docker run -d --name webserver -p 8080:80 \
+            -v $PWD/web:/usr/share/nginx/html:ro nginx:alpine
+          sleep 5
+          curl --retry 5 --retry-delay 2 --fail http://host.docker.internal:8080/index.html
+
+      - name: 🔎 Ejecutar pruebas funcionales Selenium (Chrome)
+        run: mvn -Dtest=UserFlowUITest#testWithChrome test
+
+      - name: 📃 Subir reporte Selenium Chrome
+        uses: actions/upload-artifact@v4
+        with:
+          name: selenium-chrome-report
+          path: target/selenium-reports/chrome/
+
+      - name: 🔎 Ejecutar pruebas funcionales Selenium (Firefox)
+        run: mvn -Dtest=UserFlowUITest#testWithFirefox test
+
+      - name: 📃 Subir reporte Selenium Firefox
+        uses: actions/upload-artifact@v4
+        with:
+          name: selenium-firefox-report
+          path: target/selenium-reports/firefox/
+
+      - name: ✅ Ejecutar pruebas unitarias (JUnit) y generar cobertura HTML (JaCoCo)
+        run: mvn clean verify
+
+      - name: 📊 Subir reporte de cobertura HTML (JaCoCo)
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-html-report
+          path: target/site/jacoco/
+
+      - name: 📡 Publicar logs de pruebas unitarias
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-logs
+          path: target/surefire-reports/
+
+      - name: 🔹 Instalar JMeter
+        run: |
+          sudo apt-get update && sudo apt-get install -y jmeter
+
+      - name: 🔢 Ejecutar prueba de rendimiento (JMeter)
+        run: |
+          jmeter -n -t performance/performance_test.jmx -l performance/results.jtl
+
+      - name: 🚜 Generar reporte HTML de JMeter
+        run: |
+          mkdir -p performance/html-report
+          jmeter -g performance/results.jtl -o performance/html-report
+
+      - name: 📃 Subir reporte HTML JMeter
+        uses: actions/upload-artifact@v4
+        with:
+          name: jmeter-html-report
+          path: performance/html-report/
