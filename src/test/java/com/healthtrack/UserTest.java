@@ -2,6 +2,7 @@ package com.healthtrack;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class UserTest {
@@ -28,10 +29,4 @@ class UserTest {
         usuario.actualizarPeso(72.5);
         assertEquals(72.5, usuario.getPeso(), "El peso no fue actualizado correctamente");
     }
-    
-    // @Test
-    // void testActualizarPesoConBugActual() {
-    //     usuario.actualizarPeso(72.5);
-    //     assertEquals(69.0, usuario.getPeso(), "El peso debería haber sido reducido en 1kg por el bug");
-    // }
 }

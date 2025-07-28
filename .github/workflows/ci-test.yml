@@ -13,6 +13,9 @@ jobs:
     name: Build, Test, Sonar & Artifacts
     runs-on: ubuntu-latest
 
+    env:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
     steps:
       - name: ✨ Checkout repo
         uses: actions/checkout@v4
@@ -28,17 +31,24 @@ jobs:
       - name: 🔧 Instalar dependencias
         run: mvn install -DskipTests
 
-      - name: ✨ SonarCloud Analysis
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: ✅ Ejecutar pruebas unitarias y generar cobertura (JaCoCo)
+        run: mvn clean verify
+
+      - name: 📊 Subir reporte de cobertura HTML (JaCoCo)
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-html-report
+          path: target/site/jacoco/
+
+      - name: 🛰️ Análisis SonarCloud (con cobertura)
         run: |
-          mvn verify sonar:sonar \
+          mvn sonar:sonar \
             -Dsonar.projectKey=Modulo4-Prueba \
             -Dsonar.organization=Devops-Team-Adalit \
             -Dsonar.host.url=https://sonarcloud.io \
-            -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
-            -Dsonar.branch.name=main \
-            -Dsonar.branch.target=main
+            -Dsonar.login=$SONAR_TOKEN \
+            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
+            -Dsonar.branch.name=${{ github.ref_name }}
 
       - name: 🐳 Levantar servidor HTML con Docker (NGINX)
         run: |
@@ -76,15 +86,6 @@ jobs:
         with:
           name: selenium-firefox-report
           path: target/selenium-reports/firefox/
-
-      - name: ✅ Ejecutar pruebas unitarias (JUnit) y generar cobertura HTML (JaCoCo)
-        run: mvn clean verify
-
-      - name: 📊 Subir reporte de cobertura HTML (JaCoCo)
-        uses: actions/upload-artifact@v4
-        with:
-          name: jacoco-html-report
-          path: target/site/jacoco/
 
       - name: 📡 Publicar logs de pruebas unitarias
         if: always()
