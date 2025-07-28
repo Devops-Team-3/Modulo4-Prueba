@@ -16,7 +16,8 @@ import org.openqa.selenium.firefox.FirefoxOptions;
 
 public class UserFlowUITest {
 
-    private static final String URL = "http://host.docker.internal:8080/index.html";
+    private static final String URL = "http://localhost:8080/index.html";
+
 
 
     @Test
