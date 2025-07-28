@@ -18,8 +18,6 @@ public class UserFlowUITest {
 
     private static final String URL = "http://localhost:8080/index.html";
 
-
-
     @Test
     public void testWithChrome() throws IOException {
         ChromeOptions options = new ChromeOptions();
@@ -47,7 +45,6 @@ public class UserFlowUITest {
             boton.click();
             boolean postCond = titulo.getText().equals("Peso actualizado");
 
-            // Guardar resultado en HTML simple
             File dir = new File("target/selenium-reports/" + browser);
             dir.mkdirs();
             try (FileWriter writer = new FileWriter(new File(dir, "report.html"))) {

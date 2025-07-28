@@ -11,13 +11,22 @@
   <name>healthtrack</name>
   <url>http://maven.apache.org</url>
 
-  <dependencies>
+  <properties>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <junit.jupiter.version>5.10.0</junit.jupiter.version>
+    <selenium.version>4.20.0</selenium.version>
+    <jacoco.version>0.8.7</jacoco.version>
+    <surefire.version>3.2.5</surefire.version>
+  </properties>
 
-    <!-- JUnit 5 API + Engine -->
+  <dependencies>
+    <!-- JUnit 5 -->
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter</artifactId>
-      <version>5.10.0</version>
+      <version>${junit.jupiter.version}</version>
       <scope>test</scope>
     </dependency>
 
@@ -25,26 +34,37 @@
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-java</artifactId>
-      <version>4.20.0</version>
+      <version>${selenium.version}</version>
     </dependency>
-
   </dependencies>
 
   <build>
     <plugins>
 
-      <!-- Surefire para correr tests -->
+      <!-- Maven Compiler -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.11.0</version>
+        <configuration>
+          <source>${maven.compiler.source}</source>
+          <target>${maven.compiler.target}</target>
+          <encoding>${project.build.sourceEncoding}</encoding>
+        </configuration>
+      </plugin>
+
+      <!-- Surefire for unit & UI tests -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.2.5</version>
+        <version>${surefire.version}</version>
       </plugin>
 
-      <!-- JaCoCo para cobertura HTML -->
+      <!-- JaCoCo for test coverage -->
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
-        <version>0.8.7</version>
+        <version>${jacoco.version}</version>
         <executions>
           <execution>
             <id>prepare-agent</id>
@@ -67,7 +87,7 @@
         </executions>
       </plugin>
 
-      <!-- Sonar -->
+      <!-- SonarQube Scanner -->
       <plugin>
         <groupId>org.sonarsource.scanner.maven</groupId>
         <artifactId>sonar-maven-plugin</artifactId>
