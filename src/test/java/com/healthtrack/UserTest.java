@@ -28,10 +28,10 @@ class UserTest {
         usuario.actualizarPeso(72.5);
         assertEquals(72.5, usuario.getPeso(), "El peso no fue actualizado correctamente");
     }
-
-    @Test
-    void testActualizarPesoConBugActual() {
-        usuario.actualizarPeso(72.5);
-        assertEquals(69.0, usuario.getPeso(), "El peso debería haber sido reducido en 1kg por el bug");
-    }
+    //Bug Fixed
+    // @Test
+    // void testActualizarPesoConBugActual() {
+    //     usuario.actualizarPeso(72.5);
+    //     assertEquals(69.0, usuario.getPeso(), "El peso debería haber sido reducido en 1kg por el bug");
+    // }
 }

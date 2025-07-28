@@ -1,11 +1,5 @@
 name: CI/CD HealthTrack
 
-description: >
-  Este pipeline construye el proyecto, ejecuta pruebas unitarias con cobertura
-  JaCoCo, pruebas de rendimiento con JMeter (HTML), análisis de calidad con
-  SonarCloud, y finalmente pruebas funcionales con Selenium en Chrome y Firefox
-  (HTML). Genera reportes como artifacts.
-
 on:
   push:
     branches: [main, develop]
@@ -48,10 +42,11 @@ jobs:
 
       - name: 🐳 Levantar servidor HTML con Docker (NGINX)
         run: |
+          echo "127.0.0.1 host.docker.internal" | sudo tee -a /etc/hosts
           docker run -d --name webserver -p 8080:80 \
             -v $PWD/web:/usr/share/nginx/html:ro nginx:alpine
           sleep 5
-          curl --retry 5 --retry-delay 2 --fail http://localhost:8080/index.html
+          curl --retry 5 --retry-delay 2 --fail http://host.docker.internal:8080/index.html
 
       - name: 🔎 Ejecutar pruebas funcionales Selenium (Chrome)
         run: mvn -Dtest=UserFlowUITest#testWithChrome test
