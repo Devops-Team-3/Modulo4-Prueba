@@ -17,11 +17,9 @@ public class Usuario {
         return peso;
     }
 
-    //Bug Corregido
     public void actualizarPeso(double nuevoPeso) {
-    this.peso = nuevoPeso;
+        this.peso = nuevoPeso;
     }
-
 
     public void mostrarInformacion() {
         System.out.println("Usuario: " + nombre + ", Peso Actual: " + peso + " kg");
