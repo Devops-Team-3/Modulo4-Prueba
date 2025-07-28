@@ -50,44 +50,31 @@ jobs:
             -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
             -Dsonar.branch.name=${{ github.ref_name }}
 
-      - name: 🐳 Levantar servidor HTML con Docker (NGINX)
+      - name: 🔎 Ejecutar pruebas funcionales Selenium (Chrome y Firefox)
         run: |
           echo "127.0.0.1 host.docker.internal" | sudo tee -a /etc/hosts
           docker run -d --name webserver -p 8080:80 \
             -v $PWD/web:/usr/share/nginx/html:ro nginx:alpine
 
-      - name: ⏳ Esperar a que el servidor NGINX esté disponible
-        run: |
-          echo "Esperando que el servidor NGINX esté listo..."
-          for i in {1..20}; do
-            status=$(curl -o /dev/null -s -w "%{http_code}" http://localhost:8080/index.html || echo 000)
-            if [ "$status" -eq 200 ]; then
-              echo "✅ Servidor disponible con código HTTP 200"
+          echo "⏳ Esperando que el servidor NGINX esté listo..."
+          for i in {1..15}; do
+            if curl -sSf http://localhost:8080/index.html > /dev/null; then
+              echo "✅ Servidor disponible"
               break
             else
-              echo "⏳ Intento $i: aún no disponible (HTTP $status)"
-              sleep 3
+              echo "⏳ Esperando ($i)..."
+              sleep 2
             fi
           done
 
-          final_status=$(curl -o /dev/null -s -w "%{http_code}" http://localhost:8080/index.html || echo 000)
-          if [ "$final_status" -ne 200 ]; then
-            echo "❌ El servidor no respondió con éxito tras múltiples intentos"
-            docker logs webserver || true
-            exit 1
-          fi
-
-      - name: 🔎 Ejecutar pruebas funcionales Selenium (Chrome)
-        run: mvn -Dtest=UserFlowUITest#testWithChrome test
+          mvn -Dtest=UserFlowUITest#testWithChrome test
+          mvn -Dtest=UserFlowUITest#testWithFirefox test
 
       - name: 📃 Subir reporte Selenium Chrome
         uses: actions/upload-artifact@v4
         with:
           name: selenium-chrome-report
           path: target/selenium-reports/chrome/
-
-      - name: 🔎 Ejecutar pruebas funcionales Selenium (Firefox)
-        run: mvn -Dtest=UserFlowUITest#testWithFirefox test
 
       - name: 📃 Subir reporte Selenium Firefox
         uses: actions/upload-artifact@v4
@@ -101,6 +88,10 @@ jobs:
         with:
           name: test-logs
           path: target/surefire-reports/
+
+      - name: 📋 Mostrar logs de NGINX si falla
+        if: failure()
+        run: docker logs webserver || echo "No logs disponibles"
 
       - name: 🔹 Instalar JMeter
         run: |
