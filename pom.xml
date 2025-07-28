@@ -37,13 +37,21 @@
       <version>${selenium.version}</version>
     </dependency>
 
+    <!-- Awaitility -->
     <dependency>
-  <groupId>org.awaitility</groupId>
-  <artifactId>awaitility</artifactId>
-  <version>4.2.0</version>
-  <scope>test</scope>
-</dependency>
+      <groupId>org.awaitility</groupId>
+      <artifactId>awaitility</artifactId>
+      <version>4.2.0</version>
+      <scope>test</scope>
+    </dependency>
 
+    <!-- WebDriverManager -->
+    <dependency>
+      <groupId>io.github.bonigarcia</groupId>
+      <artifactId>webdrivermanager</artifactId>
+      <version>5.8.0</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
