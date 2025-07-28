@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -46,7 +47,10 @@ public class UserFlowUITest {
             boolean postCond = titulo.getText().equals("Peso actualizado");
 
             File dir = new File("target/selenium-reports/" + browser);
-            dir.mkdirs();
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+
             try (FileWriter writer = new FileWriter(new File(dir, "report.html"))) {
                 writer.write("<html><body>");
                 writer.write("<h2>Resultado Selenium (" + browser + ")</h2>");
