@@ -20,7 +20,7 @@ private class UserFlowUITest {
     private static final String URL = "http://localhost:8080/index.html";
 
     @Test
-    private void testWithChrome() throws IOException {
+    public void testWithChrome() throws IOException {
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless=new", "--no-sandbox", "--disable-dev-shm-usage");
         WebDriver driver = new ChromeDriver(options);
@@ -28,7 +28,7 @@ private class UserFlowUITest {
     }
 
     @Test
-    private void testWithFirefox() throws IOException {
+    public void testWithFirefox() throws IOException {
         FirefoxOptions options = new FirefoxOptions();
         options.addArguments("--headless");
         WebDriver driver = new FirefoxDriver(options);
