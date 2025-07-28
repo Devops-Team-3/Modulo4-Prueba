@@ -15,12 +15,12 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 
-public class UserFlowUITest {
+private class UserFlowUITest {
 
     private static final String URL = "http://localhost:8080/index.html";
 
     @Test
-    public void testWithChrome() throws IOException {
+    private void testWithChrome() throws IOException {
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless=new", "--no-sandbox", "--disable-dev-shm-usage");
         WebDriver driver = new ChromeDriver(options);
@@ -28,7 +28,7 @@ public class UserFlowUITest {
     }
 
     @Test
-    public void testWithFirefox() throws IOException {
+    private void testWithFirefox() throws IOException {
         FirefoxOptions options = new FirefoxOptions();
         options.addArguments("--headless");
         WebDriver driver = new FirefoxDriver(options);
